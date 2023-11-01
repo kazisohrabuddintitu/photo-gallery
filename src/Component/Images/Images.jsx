@@ -1,51 +1,104 @@
 import React, { useState } from 'react';
-import image1 from '../../../public/images/image-1.webp';
-import image2 from '../../../public/images/image-2.webp';
-import image3 from '../../../public/images/image-3.webp';
-import image4 from '../../../public/images/image-4.webp';
-import image5 from '../../../public/images/image-5.webp';
-import image6 from '../../../public/images/image-6.webp';
-import image7 from '../../../public/images/image-7.webp';
-import image8 from '../../../public/images/image-8.webp';
-import image9 from '../../../public/images/image-9.webp';
-import image10 from '../../../public/images/image-10.jpeg';
-import image11 from '../../../public/images/image-11.jpeg';
+import { useDrag, useDrop, DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import image1 from '../../images/image-1.webp';
+import image2 from '../../images/image-2.webp';
+import image3 from '../../images/image-3.webp';
+import image4 from '../../images/image-4.webp';
+import image5 from '../../images/image-5.webp';
+import image6 from '../../images/image-6.webp';
+import image7 from '../../images/image-7.webp';
+import image8 from '../../images/image-8.webp';
+import image9 from '../../images/image-9.webp';
+import image10 from '../../images/image-10.jpeg';
+import image11 from '../../images/image-11.jpeg';
+
+
+//Image checkbox and drag drop functionalities
+const DraggableImage = ({ index, image, onDrop, onClickCheckbox }) => {
+    const [, ref] = useDrag({
+        type: 'IMAGE',
+        item: { index, type: 'IMAGE' }
+    });
+
+    const [, drop] = useDrop({
+        accept: 'IMAGE',
+        hover: (draggedItem) => {
+            if (draggedItem.index !== index) {
+                onDrop(draggedItem.index, index);
+                draggedItem.index = index;
+            }
+        }
+    });
+
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleCheckboxChange = () => {
+        setIsChecked(!isChecked);
+        onClickCheckbox(index); 
+    };
+
+    return (
+        <div
+            ref={(node) => ref(drop(node))}
+            className="draggable-image relative group"
+            style={{
+                border: '1px solid gray',
+                borderRadius: '15px',
+                overflow: 'hidden'
+            }}
+        >
+            <div className="bg-white transition-colors duration-300 group-hover:bg-transparent rounded-lg">
+                <img src={image} alt={`Image ${index}`}/>
+            </div>
+            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            <div className="absolute top-2 left-2">
+                <label className="cursor-pointer">
+                    <input
+                        type="checkbox"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700"
+                        checked={isChecked}
+                        onChange={handleCheckboxChange}
+                    />
+                </label>
+            </div>
+        </div>
+    );
+};
 
 
 const Images = () => {
     const allImages = [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10, image11];
 
     const [clickImages, setClickImages] = useState([]);
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState(allImages);
 
-    const handleImageClick = (index) => {
-        const selectImages = clickImages.indexOf(index);
-
-        if (selectImages === -1) { //cause counted index start from 0
-
-            // images are not added,sothis selected items
-            setClickImages([...clickImages, index]);
+    const handleCheckboxClick = (index) => {
+        const updatedClickImages = [...clickImages];
+        if (updatedClickImages.includes(index)) {
+            updatedClickImages.splice(updatedClickImages.indexOf(index), 1);
+        } else {
+            updatedClickImages.push(index);
         }
-        else {
-            // image already selected, remove it from the selected items
-            const updatedImages = [...clickImages];
-            updatedImages.splice(selectImages, 1);
-            setClickImages(updatedImages);
-        }
+        setClickImages(updatedClickImages);
     };
 
     const handleDeleteImages = () => {
-        const updatedImages = allImages.filter((allImage, index) => !clickImages.includes(index));
-        // Update state with the filter images
-        setImages(updatedImages);
-
-        // Clear the selected items
-        setClickImages([]);
+    const updatedImages = allImages.filter((_, index) => !clickImages.includes(index));
+    setImages(updatedImages);
+    setClickImages([]);
     };
 
+    const handleDrop = (fromIndex, toIndex) => {
+        const updatedImages = [...images];
+        const [draggedImage] = updatedImages.splice(fromIndex, 1);
+        updatedImages.splice(toIndex, 0, draggedImage);
+        setImages(updatedImages);
+      };
+
     return (
-        <>
-            <div className='flex justify-between'>
+        <DndProvider backend={HTML5Backend}>
+            <div className='flex justify-between flex-wrap'>
                 <div className='mt-10'>
                     <p className='ml-12 text-2xl font-bold'>Total selected items: {clickImages.length}</p>
                 </div>
@@ -53,21 +106,30 @@ const Images = () => {
                     <button onClick={handleDeleteImages} className="btn text-xl">Delete Items</button>
                 </div>
             </div>
-            <div className="container mx-auto p-4 ">
+            {/* Image containers */}
+            <div className="container mx-auto p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
-                    {allImages.map((allImage, index) => (
+                    {images.map((image, index) => (
                         <div key={index} className={index === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}>
-                            <div className="relative">
-                                <img src={allImage} alt={`Image ${index + 1}`} className="w-full h-auto cursor-pointer hover:scale-110 rounded-2xl" onClick={() => handleImageClick(index)} />
-                                <div className="absolute top-5 right-5">
-                                    <input type="checkbox" className="checkbox" checked={clickImages.includes(index)} onChange={() => handleImageClick(index)} />
-                                </div>
-                            </div>
+                            <DraggableImage index={index} image={image} onDrop={handleDrop} onClickCheckbox={handleCheckboxClick} />
                         </div>
                     ))}
+                    {/* Add Images */}
+                    <div className="col-span-1 row-span-1 flex justify-center items-center" style={{
+                        border: '1px dotted gray',
+                        borderRadius: '15px',
+                        overflow: 'hidden'
+                    }}>
+                        
+                        <label htmlFor="file-upload" className="block text-xl font-bold text-gray-800 mb-2">
+                            <img src='src/images/image-icon.png' alt="" className="mx-auto w-6 h-6 mb-2" />
+                            Add Images
+                        </label>
+                        <input id="file-upload" type="file" accept="image/*" multiple className="hidden" />
+                    </div>
                 </div>
             </div>
-        </>
+        </DndProvider>
     );
 };
 

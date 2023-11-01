@@ -9,7 +9,7 @@ const Home = () => {
                 <header className="bg-blue-500 p-4">
                     <h1 className="text-white text-2xl font-semibold">Image Gallery</h1>
                 </header>
-                <main>
+                <main className='bg-white'>
                     <Images></Images>
                     {/* <HomeImages></HomeImages> */}
                 </main>
