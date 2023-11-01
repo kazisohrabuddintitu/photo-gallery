@@ -10,5 +10,6 @@ Currently, two official plugins are available:
 
 
 # To run
-npm install
+npm install,
+
 npm run dev
