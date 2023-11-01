@@ -12,7 +12,7 @@ import image8 from '../../images/image-8.webp';
 import image9 from '../../images/image-9.webp';
 import image10 from '../../images/image-10.jpeg';
 import image11 from '../../images/image-11.jpeg';
-
+import imageicon from '../../images/image-icon.png'
 
 //Image checkbox and drag drop functionalities
 const DraggableImage = ({ index, image, onDrop, onClickCheckbox }) => {
@@ -122,7 +122,7 @@ const Images = () => {
                     }}>
                         
                         <label htmlFor="file-upload" className="block text-xl font-bold text-gray-800 mb-2">
-                            <img src='src/images/image-icon.png' alt="" className="mx-auto w-6 h-6 mb-2" />
+                            <img src={imageicon} alt="" className="mx-auto w-6 h-6 mb-2" />
                             Add Images
                         </label>
                         <input id="file-upload" type="file" accept="image/*" multiple className="hidden" />
