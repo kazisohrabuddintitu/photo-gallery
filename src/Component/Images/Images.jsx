@@ -32,11 +32,13 @@ const DraggableImage = ({ index, image, onDrop, onClickCheckbox }) => {
     });
 
     const [isChecked, setIsChecked] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
         onClickCheckbox(index); 
     };
+
 
     return (
         <div
@@ -47,16 +49,18 @@ const DraggableImage = ({ index, image, onDrop, onClickCheckbox }) => {
                 borderRadius: '15px',
                 overflow: 'hidden'
             }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <div className="bg-white transition-colors duration-300 group-hover:bg-transparent rounded-lg">
                 <img src={image} alt={`Image ${index}`}/>
             </div>
             <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             <div className="absolute top-2 left-2">
-                <label className="cursor-pointer">
+                <label className="cursor-pointer relative">
                     <input
                         type="checkbox"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700"
+                        className={`form-checkbox h-5 w-5 text-blue-600 ${isHovered ? '' : 'hidden'}`}
                         checked={isChecked}
                         onChange={handleCheckboxChange}
                     />
