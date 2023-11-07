@@ -109,7 +109,7 @@ const Images = () => {
             <div className="container mx-auto p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-10">
                     {images.map((image, index) => (
-                        <div key={index} className="col-span-1">
+                        <div key={index} className={`col-span-1 ${index === 0 ? 'sm:col-span-2 sm:row-span-2' : ''}`}>
                             <DraggableImage index={index} image={image} onDrop={handleDrop} onClickCheckbox={handleCheckboxClick} />
                         </div>
                     ))}
@@ -124,8 +124,6 @@ const Images = () => {
                 </div>
             </div>
         </DndProvider>
-
-
     );
 };
 
