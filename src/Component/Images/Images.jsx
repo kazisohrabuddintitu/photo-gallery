@@ -30,7 +30,8 @@ const DraggableImage = ({ index, image, onDrop, onClickCheckbox }) => {
             }
         }
     });
-
+    
+    //toggling checkbox and hover status
     const [isChecked, setIsChecked] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
@@ -39,21 +40,16 @@ const DraggableImage = ({ index, image, onDrop, onClickCheckbox }) => {
         onClickCheckbox(index); 
     };
 
-
     return (
+        // draggable and checkbox
         <div
             ref={(node) => ref(drop(node))}
-            className="draggable-image relative group"
-            style={{
-                border: '1px solid gray',
-                borderRadius: '15px',
-                overflow: 'hidden'
-            }}
+            className="draggable-image relative group border border-gray-300 rounded-lg overflow-hidden mb-4"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             <div className="bg-white transition-colors duration-300 group-hover:bg-transparent rounded-lg">
-                <img src={image} alt={`Image ${index}`}/>
+                <img src={image} alt={`Image ${index+1}`} className="w-full" />
             </div>
             <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             <div className="absolute top-2 left-2">
@@ -69,6 +65,7 @@ const DraggableImage = ({ index, image, onDrop, onClickCheckbox }) => {
         </div>
     );
 };
+
 
 
 const Images = () => {
@@ -102,31 +99,24 @@ const Images = () => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className='flex justify-between flex-wrap'>
-                <div className='mt-10'>
-                    <p className='ml-12 text-2xl font-bold'>Total selected items: {clickImages.length}</p>
-                </div>
-                <div className="mt-4 mr-10">
+            <div className='flex flex-col sm:flex-row justify-between'>
+                <div className='mt-4 sm:mt-10 ml-4 sm:ml-12 text-2xl font-bold'>Total selected items: {clickImages.length}</div>
+                <div className="mt-4 sm:mt-10 mr-4 sm:mr-10">
                     <button onClick={handleDeleteImages} className="btn text-xl">Delete Items</button>
                 </div>
             </div>
             {/* Image containers */}
             <div className="container mx-auto p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-10">
                     {images.map((image, index) => (
-                        <div key={index} className={index === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}>
+                        <div key={index} className="col-span-1">
                             <DraggableImage index={index} image={image} onDrop={handleDrop} onClickCheckbox={handleCheckboxClick} />
                         </div>
                     ))}
                     {/* Add Images */}
-                    <div className="col-span-1 row-span-1 flex justify-center items-center" style={{
-                        border: '1px dotted gray',
-                        borderRadius: '15px',
-                        overflow: 'hidden'
-                    }}>
-                        
+                    <div className="col-span-1 row-span-1 flex flex-col justify-center items-center" style={{ border: '1px dotted gray', borderRadius: '15px', overflow: 'hidden' }}>
                         <label htmlFor="file-upload" className="block text-xl font-bold text-gray-800 mb-2">
-                            <img src={imageicon} alt="" className="mx-auto w-6 h-6 mb-2" />
+                            <img src={imageicon} alt="" className="mx-auto w-6 h-6" />
                             Add Images
                         </label>
                         <input id="file-upload" type="file" accept="image/*" multiple className="hidden" />
@@ -134,6 +124,8 @@ const Images = () => {
                 </div>
             </div>
         </DndProvider>
+
+
     );
 };
 
